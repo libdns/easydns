@@ -13,6 +13,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/libdns/libdns"
@@ -31,6 +32,10 @@ type Provider struct {
 // GetRecords lists all the records in the zone.
 func (p *Provider) GetRecords(ctx context.Context, zone string) ([]libdns.Record, error) {
 	log.Println("Get Records for zone:", zone)
+
+	// Remove trailing dot from zone if present
+	zone = strings.TrimSuffix(zone, ".")
+
 	client := http.Client{}
 	var records []libdns.Record
 	resultObj := ZoneRecordResponse{}
@@ -95,6 +100,9 @@ func (p *Provider) AppendRecords(ctx context.Context, zone string, records []lib
 	log.Println("Append Record(s) to zone:", zone)
 	var appendedRecords []libdns.Record
 
+	// Remove trailing dot from zone if present
+	zone = strings.TrimSuffix(zone, ".")
+
 	for _, record := range records {
 		client := http.Client{}
 
@@ -148,6 +156,9 @@ func (p *Provider) AppendRecords(ctx context.Context, zone string, records []lib
 // It returns the updated records.
 func (p *Provider) SetRecords(ctx context.Context, zone string, records []libdns.Record) ([]libdns.Record, error) {
 	log.Println("Update Record(s) in zone:", zone)
+
+	// Remove trailing dot from zone if present
+	zone = strings.TrimSuffix(zone, ".")
 
 	var updatedRecords []libdns.Record
 
@@ -219,6 +230,10 @@ func (p *Provider) SetRecords(ctx context.Context, zone string, records []libdns
 // DeleteRecords deletes the records from the zone. It returns the records that were deleted.
 func (p *Provider) DeleteRecords(ctx context.Context, zone string, records []libdns.Record) ([]libdns.Record, error) {
 	log.Println("Delete Record(s) from zone:", zone)
+
+	// Remove trailing dot from zone if present
+	zone = strings.TrimSuffix(zone, ".")
+
 	var deletedRecords []libdns.Record
 
 	currentRecords, err := p.GetRecords(ctx, zone)
