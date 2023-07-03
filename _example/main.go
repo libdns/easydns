@@ -27,10 +27,6 @@ func main() {
 		fmt.Printf("EASYDNS_KEY not set\n")
 		return
 	}
-	url := os.Getenv("EASYDNS_URL")
-	if url == "" {
-		url = "https://rest.easydns.net"
-	}
 	zone := os.Getenv("EASYDNS_ZONE")
 	if zone == "" {
 		fmt.Printf("EASYDNS_ZONE not set\n")
@@ -39,7 +35,11 @@ func main() {
 	provider := easydns.Provider{
 		APIToken: token,
 		APIKey:   key,
-		APIUrl:   url,
+	}
+
+	url := os.Getenv("EASYDNS_URL")
+	if url != "" {
+		provider.APIUrl = url
 	}
 
 	records, err := provider.GetRecords(context.TODO(), zone)
@@ -53,7 +53,7 @@ func main() {
 
 	for _, record := range records {
 		fmt.Printf("%s (.%s): %s, %s\n", record.Name, zone, record.Value, record.Type)
-		if record.Name == fmt.Sprintf("%s.%s", testName, zone) {
+		if record.Name == testName {
 			hasTestName = true
 			testRecord = record
 		}
@@ -63,7 +63,7 @@ func main() {
 		appendedRecords, err := provider.AppendRecords(context.TODO(), zone, []libdns.Record{
 			libdns.Record{
 				Type:  "TXT",
-				Name:  testName + "." + zone,
+				Name:  testName,
 				TTL:   0,
 				Value: "test_add_record_value",
 			},

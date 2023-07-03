@@ -130,7 +130,7 @@ func (p *Provider) AppendRecords(ctx context.Context, zone string, records []lib
 		defer resp.Body.Close()
 
 		if resp.StatusCode != http.StatusCreated {
-			return nil, fmt.Errorf("could not add record for domain: %s, HTTP Status: %s", zone, resp.Status)
+			return nil, fmt.Errorf("could not add record [%s] for domain [%s]: HTTP Status: %s", record.Name, zone, resp.Status)
 		}
 
 		_, err = io.ReadAll(resp.Body)
