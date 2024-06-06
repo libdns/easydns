@@ -114,7 +114,7 @@ func (p *Provider) AppendRecords(ctx context.Context, zone string, records []lib
 			Domain:   zone,
 			Host:     record.Name,
 			TTL:      int(record.TTL.Seconds()),
-			Priority: record.Priority,
+			Priority: int(record.Priority),
 			Type:     record.Type,
 			Rdata:    record.Value,
 		})
