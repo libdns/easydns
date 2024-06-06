@@ -78,7 +78,7 @@ func (p *Provider) GetRecords(ctx context.Context, zone string) ([]libdns.Record
 		if err != nil {
 			return nil, err
 		}
-		priority, err := strconv.Atoi(r.Priority)
+		uint(priority), err := strconv.Atoi(r.Priority)
 		if err != nil {
 			priority = 0
 		}
@@ -88,7 +88,7 @@ func (p *Provider) GetRecords(ctx context.Context, zone string) ([]libdns.Record
 			Name:     r.Host,
 			Value:    r.Rdata,
 			TTL:      time.Duration(ttl) * time.Second,
-			Priority: priority,
+			Priority: int(priority),
 		})
 	}
 
